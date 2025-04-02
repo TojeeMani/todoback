@@ -29,9 +29,20 @@ app.post("/api/tasks", async (req, res) => {
 // Update a task
 app.put("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
-  const { completed } = req.body;
-  await Task.findByIdAndUpdate(id, { completed });
-  res.sendStatus(200);
+  const { name, completed } = req.body;
+  const updateData = {};
+  if (name !== undefined) updateData.name = name;
+  if (completed !== undefined) updateData.completed = completed;
+
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+    res.json(updatedTask);
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).send("Error updating task");
+  }
 });
 
 // Delete a task
