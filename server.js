@@ -31,14 +31,17 @@ app.put("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
   const { name, completed } = req.body;
   const updateData = {};
-  if (name !== undefined) updateData.name = name;
+  if (name !== undefined) updateData.name = name; // Ensure 'name' is updated
   if (completed !== undefined) updateData.completed = completed;
 
   try {
     const updatedTask = await Task.findByIdAndUpdate(id, updateData, {
-      new: true,
+      new: true, // Return the updated document
     });
-    res.json(updatedTask);
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+    res.json(updatedTask); // Return the updated task
   } catch (error) {
     console.error("Error updating task:", error);
     res.status(500).send("Error updating task");
