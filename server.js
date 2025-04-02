@@ -30,6 +30,11 @@ app.post("/api/tasks", async (req, res) => {
 app.put("/api/tasks/:id", async (req, res) => {
   const { id } = req.params;
   const { name, completed } = req.body;
+
+  if (!name && completed === undefined) {
+    return res.status(400).json({ error: "Invalid request. 'name' or 'completed' must be provided." });
+  }
+
   const updateData = {};
   if (name !== undefined) updateData.name = name; // Ensure 'name' is updated
   if (completed !== undefined) updateData.completed = completed;
