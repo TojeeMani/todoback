@@ -39,12 +39,13 @@ app.put("/api/tasks/:id", async (req, res) => {
       new: true, // Return the updated document
     });
     if (!updatedTask) {
+      console.error(`Task with ID ${id} not found`); // Log if the task is not found
       return res.status(404).json({ error: "Task not found" });
     }
     res.json(updatedTask); // Return the updated task
   } catch (error) {
-    console.error("Error updating task:", error);
-    res.status(500).send("Error updating task");
+    console.error("Error updating task:", error); // Log the error for debugging
+    res.status(500).json({ error: "Error updating task" });
   }
 });
 
